@@ -28,12 +28,12 @@ jobs:
       # Dependencies quraşdır
       - name: Flutter pub get
         run: flutter pub get
-        working-directory: flutter-app/taskology
+        working-directory: flutter-app/Taskology
 
       # APK yaradılır
       - name: Build APK
         run: flutter build apk --release
-        working-directory: flutter-app/taskology
+        working-directory: flutter-app/Taskology
 
       # APK-nı artifacts kimi saxlamaq
       - name: Upload APK
