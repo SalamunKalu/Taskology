@@ -1,41 +1,61 @@
-name: Flutter APK Build
+name: Flutter APK Build from ZIP
 
 on:
+  # Bu workflow "main" branch-ına hər hansı bir push olduqda...
   push:
     branches:
       - main
+  # ...və ya Actions tabından manual olaraq işə salındıqda işə düşəcək.
   workflow_dispatch:
 
 jobs:
   build:
+    # Build prosesi ən son Ubuntu versiyasında işləyəcək
     runs-on: ubuntu-latest
 
     steps:
-      # Repo-nu checkout et
+      # Addım 1: Reponu checkout edir (içindəki project.zip faylını götürür)
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Flutter-ı quraşdır
+      # Addım 2: Java-nı quraşdırır (Android build üçün mütləq lazımdır)
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # Addım 3: project.zip faylını açır və kodları flutter-app qovluğuna yerləşdirir
+      - name: Unzip project files
+        run: unzip project.zip -d flutter-app
+
+      # Addım 4: Keystore və şifrələri DÜZGÜN YOLA - yəni zip-dən çıxan proyektin içinə - yaradır
+      - name: Decode Keystore and Create Properties
+        run: |
+          echo "Creating keystore and properties files inside the unzipped project..."
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > flutter-app/Taskology/android/app/release.keystore
+          echo "storePassword=${{ secrets.STORE_PASSWORD }}" > flutter-app/Taskology/android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> flutter-app/Taskology/android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> flutter-app/Taskology/android/key.properties
+          echo "storeFile=app/release.keystore" >> flutter-app/Taskology/android/key.properties
+
+      # Addım 5: Flutter-in ən son stabil versiyasını quraşdırır
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.35.3'
- 
-      # UnZip et
-      - name: Unzip project
-        run: unzip project.zip -d flutter-app
+          channel: 'stable'
 
-      # Dependencies quraşdır
-      - name: Flutter pub get
+      # Addım 6: Bütün paketləri yükləyir (düzgün qovluqda)
+      - name: Install dependencies
         run: flutter pub get
         working-directory: flutter-app/Taskology
-
-      # APK yaradılır
+        
+      # Addım 7: APK faylını yaradır (sənin istədiyin kimi)
       - name: Build APK
         run: flutter build apk --release
         working-directory: flutter-app/Taskology
 
-      # APK-nı artifacts kimi saxlamaq
+      # Addım 8: Hazır APK faylını "artifacts" kimi yükləyir ki, sən onu endirə biləsən
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
