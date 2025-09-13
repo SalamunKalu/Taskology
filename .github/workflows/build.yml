@@ -29,16 +29,6 @@ jobs:
       - name: Unzip project files
         run: unzip project.zip -d flutter-app
 
-      # Addım 4: Keystore və şifrələri DÜZGÜN YOLA - yəni zip-dən çıxan proyektin içinə - yaradır
-      - name: Decode Keystore and Create Properties
-        run: |
-          echo "Creating keystore and properties files inside the unzipped project..."
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > flutter-app/Taskology/android/app/release.keystore
-          echo "storePassword=${{ secrets.STORE_PASSWORD }}" > flutter-app/Taskology/android/key.properties
-          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> flutter-app/Taskology/android/key.properties
-          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> flutter-app/Taskology/android/key.properties
-          echo "storeFile=release.keystore" >> flutter-app/Taskology/android/key.properties
-
       # Addım 5: Flutter-in ən son stabil versiyasını quraşdırır
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -61,3 +51,4 @@ jobs:
         with:
           name: app-release.apk
           path: flutter-app/Taskology/build/app/outputs/flutter-apk/app-release.apk
+          
