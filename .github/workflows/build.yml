@@ -40,4 +40,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-release.apk
-          path: flutter-app/zenciri_qirma_minimal/build/app/outputs/flutter-apk/app-release.apk
+          path: flutter-app/Taskology/build/app/outputs/flutter-apk/app-release.apk
