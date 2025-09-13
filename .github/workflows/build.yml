@@ -37,7 +37,7 @@ jobs:
           echo "storePassword=${{ secrets.STORE_PASSWORD }}" > flutter-app/Taskology/android/key.properties
           echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> flutter-app/Taskology/android/key.properties
           echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> flutter-app/Taskology/android/key.properties
-          echo "storeFile=app/release.keystore" >> flutter-app/Taskology/android/key.properties
+          echo "storeFile=release.keystore" >> flutter-app/Taskology/android/key.properties
 
       # Addım 5: Flutter-in ən son stabil versiyasını quraşdırır
       - name: Set up Flutter
